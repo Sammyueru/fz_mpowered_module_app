@@ -1,0 +1,14 @@
+App(
+    appid="fz_meshtastic",
+    name="Meshtastic",
+    apptype=FlipperAppType.EXTERNAL,
+    entry_point="fz_meshtastic_main",
+    stack_size=2 * 1024,
+    fap_category="GPIO",
+    fap_version=(1, 0),
+    fap_icon="",
+    fap_description="Meshtastic messaging on the flipper zero",
+    fap_author="Samm",
+    fap_weburl="https://sammtech.net",
+    fap_icon_assets="res",
+)
