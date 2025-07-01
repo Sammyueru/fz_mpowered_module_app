@@ -7,7 +7,7 @@ App(
     fap_category="GPIO",
     fap_version=(1, 0),
     fap_icon="",
-    fap_description="Meshtastic messaging on the flipper zero",
+    fap_description="M-Powered messaging on the flipper zero",
     fap_author="Samm",
     fap_weburl="https://sammtech.net",
     fap_icon_assets="res",
