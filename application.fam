@@ -1,8 +1,8 @@
 App(
-    appid="fz_meshtastic",
-    name="Meshtastic",
+    appid="fz_mpowered_app",
+    name="M-Powered App",
     apptype=FlipperAppType.EXTERNAL,
-    entry_point="fz_meshtastic_main",
+    entry_point="fz_mpowered_main",
     stack_size=2 * 1024,
     fap_category="GPIO",
     fap_version=(1, 0),
