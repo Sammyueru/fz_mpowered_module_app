@@ -15,10 +15,11 @@ static uint64_t parse_int(const uint8_t* buf, size_t len, size_t* out_consumed) 
     return value;
 }
 
-void pb_parse_endpoint(const uint8_t* buf, size_t len, uint64_t* out_time, char* out_short_name, size_t sn_sz) {
+void pb_parse_endpoint(const uint8_t* buf, size_t len, uint64_t* out_time, char* out_short_name, size_t sn_sz, char* msg) {
     size_t idx = 0;
     *out_time = 0;
     out_short_name[0] = '\0';
+    *msg[0] = '\0';
 
     while (idx < len) {
         size_t consumed;
@@ -54,19 +55,30 @@ void pb_parse_endpoint(const uint8_t* buf, size_t len, uint64_t* out_time, char*
                     idx += str_len;
                     break;
                 }
-            }
-            else {
                 // skip unknown data (for now)
-                if (w2 == 0) {
-                    parse_int(buf + idx, end - idx, &consumed);
-                    idx += consumed;
+                else {
+                    if (w2 == 0) {
+                        parse_int(buf + idx, end - idx, &consumed);
+                        idx += consumed;
+                    }
+                    else if (w2 == 2) {
+                        uint64_t skip = parse_int(buf + idx, end - idx, &consumed);
+                        idx += consumed + skip;
+                    }
+                    else if (w2 == 5) { idx += 4; }
+                    else if (w2 == 1) { idx += 8; }
+                    else { break; }
                 }
-                else if (w2 == 2) {
-                    uint64_t skip = parse_int(buf + idx, end - idx, &consumed);
-                    idx += consumed + skip;
-                }
-                else { break; }
             }
+        }
+        // message text
+        else if (field == 5 && wire == 2) {
+            uint64_t text_len = parse_int(buf + idx, len - idx, &consumed);
+            idx += consumed;
+            size_t copy = text_len <= MSG_SZ ? text_len : MSG_SZ - 1;
+            memcpy(*msg, buf + idx, copy);
+            *msg[copy] = '\0';
+            idx += text_len;
         }
         // skip other data
         else {

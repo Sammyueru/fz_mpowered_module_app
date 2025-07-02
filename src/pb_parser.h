@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <stddef.h>
 
-void pb_parse_endpoint(const uint8_t* buf, size_t len, uint64_t* out_time, char* out_short_name, size_t sn_sz);
+#define MSG_SZ 200
+
+void pb_parse_endpoint(const uint8_t* buf, size_t len, uint64_t* out_time, char* out_short_name, size_t sn_sz, char** msg);
 
 #endif
