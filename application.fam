@@ -3,7 +3,7 @@ App(
     name="M-Powered App",
     apptype=FlipperAppType.EXTERNAL,
     entry_point="fz_mpowered_main",
-    stack_size=2 * 1024,
+    stack_size=4 * 1024,
     fap_category="GPIO",
     fap_version=(1, 0),
     fap_icon="",

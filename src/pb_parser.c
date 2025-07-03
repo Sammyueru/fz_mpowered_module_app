@@ -5,7 +5,8 @@
 static uint64_t parse_int(const uint8_t* buf, size_t len, size_t* out_consumed) {
     uint64_t value = 0;
     int32_t shift = 0;
-    for (size_t i = 0; i < len, i++) {
+    size_t i;
+    for (i = 0; i < len; i++) {
         uint8_t byte = buf[i];
         value |= (uint64_t)(byte & 0x7F) << shift;
         if ((byte & 0x80) == 0) break;
@@ -19,7 +20,7 @@ void pb_parse_endpoint(const uint8_t* buf, size_t len, uint64_t* out_time, char*
     size_t idx = 0;
     *out_time = 0;
     out_short_name[0] = '\0';
-    *msg[0] = '\0';
+    msg[0] = '\0';
 
     while (idx < len) {
         size_t consumed;
@@ -30,7 +31,7 @@ void pb_parse_endpoint(const uint8_t* buf, size_t len, uint64_t* out_time, char*
 
         // time
         if (field == 2 && wire == 0) {
-            *out_time = parse_int(buf + idx, len - idx, &consumed);
+            *out_time = (uint64_t)parse_int(buf + idx, len - idx, &consumed);
             idx += consumed;
         }
         // user message
@@ -76,8 +77,8 @@ void pb_parse_endpoint(const uint8_t* buf, size_t len, uint64_t* out_time, char*
             uint64_t text_len = parse_int(buf + idx, len - idx, &consumed);
             idx += consumed;
             size_t copy = text_len <= MSG_SZ ? text_len : MSG_SZ - 1;
-            memcpy(*msg, buf + idx, copy);
-            *msg[copy] = '\0';
+            memcpy(msg, buf + idx, copy);
+            msg[copy] = '\0';
             idx += text_len;
         }
         // skip other data
