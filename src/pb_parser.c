@@ -5,9 +5,9 @@
 static uint64_t parse_int(const uint8_t* buf, size_t len, size_t* out_consumed) {
     uint64_t value = 0;
     int32_t shift = 0;
-    size_t i;
-    for (i = 0; i < len; i++) {
-        uint8_t byte = buf[i];
+    size_t i = 0;
+    while (i < len) {
+        uint8_t byte = buf[i++];
         value |= (uint64_t)(byte & 0x7F) << shift;
         if ((byte & 0x80) == 0) break;
         shift += 7;
