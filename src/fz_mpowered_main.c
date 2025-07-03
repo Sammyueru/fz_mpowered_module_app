@@ -54,7 +54,7 @@ static uint16_t expected_len = 0;
 static uint16_t received = 0;
 static uint8_t payload_buf[MAX_MSG_LEN];
 
-static char cmd_buffer[384] = "";
+static char cmd_buffer[768] = "";
 static FuriHalSerialHandle* serial_handle;
 
 static ViewDispatcher* view_dispatcher;
@@ -154,8 +154,9 @@ static void uart_rx_callback(FuriHalSerialHandle* handle, FuriHalSerialRxEvent e
             datetime_timestamp_to_datetime(time, &dt);
             snprintf(time_str, sizeof(time_str), "%04u-%02u-%02u %02u:%02u:%02u", (unsigned)dt.year, (unsigned)dt.month, (unsigned)dt.day, (unsigned)dt.hour, (unsigned)dt.minute, (unsigned)dt.second);
             char combined[272];
-            snprintf(combined, sizeof(combined), "%s\n%s\n%s\n\n", time_str, short_name, msg);
-            append_file(current_com_file, combined, sizeof(combined));
+            if (snprintf(combined, sizeof(combined), "%s\n%s\n%s\n\n", time_str, short_name, msg) > 0)
+                append_file(current_com_file, combined, sizeof(combined));
+
             add_com_log_entry(time_str, short_name, msg);
 
             parse_state = WAIT_P0;
@@ -177,7 +178,7 @@ static void text_entered_callback(void* ctx) {
     }
 
     cmd_buffer[0] = '\0';
-    snprintf(cmd_buffer, sizeof(cmd_buffer), "sendtext %s\r\n", msg_buffer);
+    snprintf(cmd_buffer, sizeof(cmd_buffer), "{\"type\":\"sendtext\",\"payload\":\"%s\"}\n", msg_buffer);
 
     furi_hal_serial_tx(serial_handle, (const uint8_t*)cmd_buffer, strlen(cmd_buffer));
     furi_hal_serial_tx_wait_complete(serial_handle);
@@ -186,6 +187,9 @@ static void text_entered_callback(void* ctx) {
     furi_hal_rtc_get_datetime(&dt);
     char timestamp_str[32];
     snprintf(timestamp_str, sizeof(timestamp_str), "%04u-%02u-%02u %02u:%02u:%02u", (unsigned)dt.year, (unsigned)dt.month, (unsigned)dt.day, (unsigned)dt.hour, (unsigned)dt.minute, (unsigned)dt.second);
+    char combined[272];
+    if (snprintf(combined, sizeof(combined), "%s\n%s\n%s\n\n", timestamp_str, username, msg_buffer) > 0)
+        append_file(current_com_file, combined, sizeof(combined));
 
     add_com_log_entry(timestamp_str, username, msg_buffer);
 
