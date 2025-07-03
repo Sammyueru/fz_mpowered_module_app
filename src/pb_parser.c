@@ -22,8 +22,12 @@ void pb_parse_endpoint(const uint8_t* buf, size_t len, uint64_t* out_time, char*
     out_short_name[0] = '\0';
     msg[0] = '\0';
 
+    while (idx < len && (buf[idx] == 0x00 || buf[idx] == 0xA5)) idx++;
+    size_t consumed = 0;
+    parse_int(buf + idx, len - idx, &consumed);
+    idx += consumed;
+
     while (idx < len) {
-        size_t consumed;
         uint64_t key = parse_int(buf + idx, len - idx, &consumed);
         idx += consumed;
         uint32_t field = key >> 3;
