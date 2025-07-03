@@ -17,8 +17,8 @@
 #include <datetime/datetime.h>
 #include "pb_parser.h"
 
-#define PREAMBLE0      0x94
-#define PREAMBLE1      0xC3
+#define PREAMBLE0      0x00
+#define PREAMBLE1      0xA5
 #define MAX_MSG_LEN    512
 #define SHORT_NAME_SZ  32
 
@@ -158,6 +158,7 @@ static void uart_rx_callback(FuriHalSerialHandle* handle, FuriHalSerialRxEvent e
                 append_file(current_com_file, combined, strlen(combined));
 
             add_com_log_entry(time_str, short_name, msg);
+            view_commit_model(com_log_view, true);
 
             parse_state = WAIT_P0;
         }
@@ -263,9 +264,7 @@ int32_t fz_mpowered_main(void* p) {
 
     // open log file
     current_com_file = storage_file_alloc(storage);
-    storage_file_open(current_com_file, "/ext/mpowered_log.txt", FSAM_READ_WRITE, FSOM_OPEN_ALWAYS);
-
-    furi_hal_serial_async_rx_start(serial_handle, uart_rx_callback, NULL, true);
+    bool ok = storage_file_open(current_com_file, "/ext/mpowered_log.txt", FSAM_READ_WRITE, FSOM_OPEN_ALWAYS);
 
     Gui* gui = furi_record_open(RECORD_GUI);
     view_dispatcher = view_dispatcher_alloc();
@@ -289,8 +288,10 @@ int32_t fz_mpowered_main(void* p) {
     text_input_set_result_callback(text_input, text_entered_callback, NULL, msg_buffer, TX_MSG_LEN, true);
     view_dispatcher_add_view(view_dispatcher, VIEW_ID_MSG_SENDER, text_input_get_view(text_input));
 
+    furi_hal_serial_async_rx_start(serial_handle, uart_rx_callback, NULL, true);
+
     view_dispatcher_switch_to_view(view_dispatcher, VIEW_ID_MAIN_MENU);
-    view_dispatcher_run(view_dispatcher);
+    if (ok) view_dispatcher_run(view_dispatcher);
 
     // cleanup
     view_dispatcher_remove_view(view_dispatcher, VIEW_ID_MAIN_MENU);
