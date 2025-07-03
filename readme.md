@@ -26,7 +26,7 @@ This app is used to communicate with M-Powered Flipper Zero modules via GPIO.
 - Flipper Zero
 - Heltec V3 module
   - [Amazon (with antenna and 3000mAh battery included)](https://a.co/d/fCDG76Z).
-  - [Official (requires antenna and external power source to be bought seperately)](https://heltec.org/project/wifi-lora-32-v3/).
+  - [Official (requires antenna and external power source to be bought separately)](https://heltec.org/project/wifi-lora-32-v3/).
 - LoRa band antenna compatible with the Heltec V3
   - In North America you'll likely want a 915 MHz antenna.
   - In the European Union you'll likely want 868 MHz antenna.
