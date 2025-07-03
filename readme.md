@@ -51,7 +51,7 @@ This app is used to communicate with M-Powered Flipper Zero modules via GPIO.
 
 1. Safety first (also look up some soldering guides if your not familiar with soldering yet)!
 2. Solder wires to the following Heltec V3 GPIO pins **5** (RX), **6** (TX), **1** (GND).
-3. These should be connected to the Flipper Zero's pins in the follow arrangement:
+3. These should be connected to the Flipper Zero's pins in the following arrangement:
    - Heltec V3: 5 (RX) -> Flipper Zero: 13 (TX)
    - Heltec V3: 6 (TX) -> Flipper Zero: 14 (RX)
    - Heltec V3: 1 (GND) -> Flipper Zero: 8, 11, or 18 (GND)
