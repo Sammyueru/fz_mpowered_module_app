@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <expansion/expansion.h>
 #include <gui/gui.h>
 #include <gui/view_dispatcher.h>
 #include <gui/canvas.h>
@@ -15,10 +16,11 @@
 #include <gui/modules/text_input.h>
 #include <storage/storage.h>
 #include <datetime/datetime.h>
+#include "pb_encoder.h"
 #include "pb_parser.h"
 
-#define PREAMBLE0      0x00
-#define PREAMBLE1      0xA5
+#define PREAMBLE0      0x94
+#define PREAMBLE1      0xC3
 #define MAX_MSG_LEN    512
 #define SHORT_NAME_SZ  32
 
@@ -35,7 +37,7 @@
 
 typedef struct {
     char sender[12];
-    char timestamp[16];
+    char timestamp[20];
     char msg[MSG_SZ];
 } ComLog;
 
@@ -206,7 +208,7 @@ static void com_log_draw(Canvas* canvas, void* ctx) {
     const uint8_t line_h = 12;
     for (size_t i = 0; i < LOG_VIS_LINES; i++) {
         size_t idx = com_log_scroll + i;
-        size_t adjusted_i = i * 3;
+        size_t adjusted_i = idx * 3;
         if (idx < com_log_count) {
             canvas_draw_str(canvas, 0, (adjusted_i + 1) * line_h, log_entries[idx].timestamp);
             canvas_draw_str(canvas, 24, (adjusted_i + 1) * line_h * 2, log_entries[idx].sender);
@@ -251,6 +253,11 @@ static void exit_program(void* ctx, uint32_t index) {
 
 int32_t fz_mpowered_main(void* p) {
     UNUSED(p);
+    // enable expansion
+    Expansion* expansion = furi_record_open(RECORD_EXPANSION);
+    expansion_enable(expansion);
+    expansion_set_listen_serial(expansion, FuriHalSerialIdUsart);
+
     // initialize UART
     serial_handle = furi_hal_serial_control_acquire(FuriHalSerialIdUsart);
     furi_hal_serial_init(serial_handle, 115200);
@@ -290,6 +297,9 @@ int32_t fz_mpowered_main(void* p) {
 
     furi_hal_serial_async_rx_start(serial_handle, uart_rx_callback, NULL, true);
 
+    srand(furi_hal_rtc_get_timestamp());
+    pb_send_want_config_id(serial_handle);
+
     view_dispatcher_switch_to_view(view_dispatcher, VIEW_ID_MAIN_MENU);
     if (ok) view_dispatcher_run(view_dispatcher);
 
@@ -300,6 +310,7 @@ int32_t fz_mpowered_main(void* p) {
     view_free(com_log_view);
     storage_file_close(current_com_file);
     storage_file_free(current_com_file);
+    furi_record_close("storage");
     text_input_free(text_input);
     menu_free(main_menu);
     view_dispatcher_free(view_dispatcher);
@@ -309,6 +320,8 @@ int32_t fz_mpowered_main(void* p) {
     furi_hal_serial_disable_direction(serial_handle, FuriHalSerialDirectionTx);
     furi_hal_serial_deinit(serial_handle);
     furi_hal_serial_control_release(serial_handle);
+    expansion_disable(expansion);
+    furi_record_close(RECORD_EXPANSION);
 
     return 0;
 }
