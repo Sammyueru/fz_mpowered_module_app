@@ -155,7 +155,7 @@ static void uart_rx_callback(FuriHalSerialHandle* handle, FuriHalSerialRxEvent e
             snprintf(time_str, sizeof(time_str), "%04u-%02u-%02u %02u:%02u:%02u", (unsigned)dt.year, (unsigned)dt.month, (unsigned)dt.day, (unsigned)dt.hour, (unsigned)dt.minute, (unsigned)dt.second);
             char combined[272];
             if (snprintf(combined, sizeof(combined), "%s\n%s\n%s\n\n", time_str, short_name, msg) > 0)
-                append_file(current_com_file, combined, sizeof(combined));
+                append_file(current_com_file, combined, strlen(combined));
 
             add_com_log_entry(time_str, short_name, msg);
 
@@ -189,7 +189,7 @@ static void text_entered_callback(void* ctx) {
     snprintf(timestamp_str, sizeof(timestamp_str), "%04u-%02u-%02u %02u:%02u:%02u", (unsigned)dt.year, (unsigned)dt.month, (unsigned)dt.day, (unsigned)dt.hour, (unsigned)dt.minute, (unsigned)dt.second);
     char combined[272];
     if (snprintf(combined, sizeof(combined), "%s\n%s\n%s\n\n", timestamp_str, username, msg_buffer) > 0)
-        append_file(current_com_file, combined, sizeof(combined));
+        append_file(current_com_file, combined, strlen(combined));
 
     add_com_log_entry(timestamp_str, username, msg_buffer);
 
