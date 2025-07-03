@@ -203,9 +203,9 @@ static void com_log_draw(Canvas* canvas, void* ctx) {
         size_t idx = com_log_scroll + i;
         size_t adjusted_i = i * 3;
         if (idx < com_log_count) {
-            canvas_draw_str(canvas, 0, (adjusted_i+1)*line_h, log_entries[idx].timestamp);
-            canvas_draw_str(canvas, 24, (adjusted_i*2+1)*line_h, log_entries[idx].sender);
-            canvas_draw_str(canvas, 0, (adjusted_i*3+1)*line_h, log_entries[idx].msg);
+            canvas_draw_str(canvas, 0, (adjusted_i + 1) * line_h, log_entries[idx].timestamp);
+            canvas_draw_str(canvas, 24, (adjusted_i + 1) * line_h * 2, log_entries[idx].sender);
+            canvas_draw_str(canvas, 0, (adjusted_i + 1) * line_h * 3, log_entries[idx].msg);
         }
     }
 }
