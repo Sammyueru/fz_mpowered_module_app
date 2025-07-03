@@ -34,7 +34,7 @@ This app is used to communicate with M-Powered Flipper Zero modules via GPIO.
   - You're probably gonna want to get a 3.7v battery.
 - Wire strippers.
 - Solder
-- Soldering iron (don't cheap out too bad if you do want a hard time).
+- Soldering iron (don't cheap out too bad if you don't want a hard time).
   - I recommend a [Pinecil V2](https://pine64.com/product/pinecil-smart-mini-portable-soldering-iron/).
 - GPIO connection options
   - "Better solution"
