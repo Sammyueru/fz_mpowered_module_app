@@ -263,7 +263,10 @@ int32_t fz_mpowered_main(void* p) {
 
     furi_hal_serial_async_rx_start(serial_handle, uart_rx_callback, NULL, true);
 
+    Gui* gui = furi_record_open(RECORD_GUI);
     view_dispatcher = view_dispatcher_alloc();
+    view_dispatcher_enable_queue(view_dispatcher);
+    view_dispatcher_attach_to_gui(view_dispatcher, gui, ViewDispatcherTypeFullscreen);
 
     main_menu = menu_alloc();
     menu_add_item(main_menu, "Message log", NULL, VIEW_ID_MSG_LOG, on_change_scene_btn, NULL);
@@ -286,12 +289,16 @@ int32_t fz_mpowered_main(void* p) {
     view_dispatcher_run(view_dispatcher);
 
     // cleanup
+    view_dispatcher_remove_view(view_dispatcher, VIEW_ID_MAIN_MENU);
+    view_dispatcher_remove_view(view_dispatcher, VIEW_ID_MSG_LOG);
+    view_dispatcher_remove_view(view_dispatcher, VIEW_ID_MSG_SENDER);
     view_free(com_log_view);
     storage_file_close(current_com_file);
     storage_file_free(current_com_file);
     text_input_free(text_input);
     menu_free(main_menu);
     view_dispatcher_free(view_dispatcher);
+    furi_record_close(RECORD_GUI);
     furi_hal_serial_async_rx_stop(serial_handle);
     furi_hal_serial_disable_direction(serial_handle, FuriHalSerialDirectionRx);
     furi_hal_serial_disable_direction(serial_handle, FuriHalSerialDirectionTx);
