@@ -55,3 +55,14 @@ This app is used to communicate with M-Powered Flipper Zero modules via GPIO.
    - Heltec V3: 5 (RX) -> Flipper Zero: 13 (TX)
    - Heltec V3: 6 (TX) -> Flipper Zero: 14 (RX)
    - Heltec V3: 1 (GND) -> Flipper Zero: 8, 11, or 18 (GND)
+
+### Setup in Meshtastic app
+
+1. Download the Meshtastic app for your mobile device.
+2. Sync with Heltec V3.
+3. Go into the remote settings for the Heltec V3.
+4. Select Serial.
+5. Enable Serial and Echo.
+6. Set RX to 5 and TX to 6.
+7. Set the Serial baud rate to BAUD_115200.
+8. Set the serial mode to PROTO.
